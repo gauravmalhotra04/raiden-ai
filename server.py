@@ -82,8 +82,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Initialize Groq client with current supported models
-groq_api_key = os.environ.get('GROQ_API_KEY', "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")
-client = Groq(api_key=groq_api_key)
+client = Groq(api_key="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")
 
 # Current supported models (July 2025)
 SUPPORTED_MODELS = [
@@ -1127,58 +1126,35 @@ def handle_disconnect():
     print(f'Client disconnected: {request.sid}')
 
 if __name__ == '__main__':
-    # Check if running in production (Render)
-    if os.environ.get('FLASK_ENV') == 'production':
-        print("Starting Raiden AI in production mode...")
-        
-        # Create necessary directories
-        os.makedirs('static/js', exist_ok=True)
-        os.makedirs('static/css', exist_ok=True)
-        os.makedirs('static/images', exist_ok=True)
-        os.makedirs('templates', exist_ok=True)
-        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        
-        # Initialize database
-        try:
-            with app.app_context():
-                init_db()
-                print("Database initialized successfully")
-        except Exception as e:
-            print(f"Error initializing database: {str(e)}")
-            exit(1)
-        
-        print("Starting Raiden AI server in production...")
-        socketio.run(app, debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-    else:
-        # Development mode - clear data on startup for fresh memory
-        print("Starting Raiden AI with fresh memory...")
-        
-        # Delete database file if it exists to start fresh
-        if os.path.exists('raiden.db'):
-            os.remove('raiden.db')
-            print("Previous database cleared for fresh start")
-        
-        # Clear uploads folder
-        if os.path.exists(UPLOAD_FOLDER):
-            import shutil
-            shutil.rmtree(UPLOAD_FOLDER)
-            print("Uploads folder cleared")
-        
-        # Create necessary directories
-        os.makedirs('static/js', exist_ok=True)
-        os.makedirs('static/css', exist_ok=True)
-        os.makedirs('static/images', exist_ok=True)
-        os.makedirs('templates', exist_ok=True)
-        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        
-        # Initialize fresh database
-        try:
-            with app.app_context():
-                init_db()
-                print("Fresh database initialized successfully")
-        except Exception as e:
-            print(f"Error initializing database: {str(e)}")
-            exit(1)
-        
-        print("Starting Raiden AI server with clean slate...")
-        socketio.run(app, debug=True, port=5000)
+    # Clear all data on startup for fresh memory
+    print("Starting Raiden AI with fresh memory...")
+    
+    # Delete database file if it exists to start fresh
+    if os.path.exists('raiden.db'):
+        os.remove('raiden.db')
+        print("Previous database cleared for fresh start")
+    
+    # Clear uploads folder
+    if os.path.exists(UPLOAD_FOLDER):
+        import shutil
+        shutil.rmtree(UPLOAD_FOLDER)
+        print("Uploads folder cleared")
+    
+    # Create necessary directories
+    os.makedirs('static/js', exist_ok=True)
+    os.makedirs('static/css', exist_ok=True)
+    os.makedirs('static/images', exist_ok=True)
+    os.makedirs('templates', exist_ok=True)
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    
+    # Initialize fresh database
+    try:
+        with app.app_context():
+            init_db()
+            print("Fresh database initialized successfully")
+    except Exception as e:
+        print(f"Error initializing database: {str(e)}")
+        exit(1)
+    
+    print("Starting Raiden AI server with clean slate...")
+    socketio.run(app, debug=True, port=5000)
