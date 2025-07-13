@@ -82,7 +82,15 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Initialize Groq client with current supported models
-client = Groq(api_key="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")
+groq_api_key = os.environ.get('GROQ_API_KEY')
+if not groq_api_key:
+    raise ValueError("GROQ_API_KEY environment variable is required")
+
+try:
+    client = Groq(api_key=groq_api_key)
+except Exception as e:
+    print(f"Error initializing Groq client: {e}")
+    client = None
 
 # Current supported models (July 2025)
 SUPPORTED_MODELS = [
@@ -93,28 +101,33 @@ SUPPORTED_MODELS = [
 
 # Select the first working model
 ACTIVE_MODEL = None
-for model in SUPPORTED_MODELS:
-    try:
-        # Test the model with a simple prompt
-        test_response = client.chat.completions.create(
-            messages=[{"role": "user", "content": "Hello"}],
-            model=model,
-            max_tokens=10
-        )
-        if test_response.choices:
-            ACTIVE_MODEL = model
-            break
-    except Exception as e:
-        print(f"Model {model} not available: {str(e)}")
-        continue
+if client:
+    for model in SUPPORTED_MODELS:
+        try:
+            # Test the model with a simple prompt
+            test_response = client.chat.completions.create(
+                messages=[{"role": "user", "content": "Hello"}],
+                model=model,
+                max_tokens=10
+            )
+            if test_response.choices:
+                ACTIVE_MODEL = model
+                break
+        except Exception as e:
+            print(f"Model {model} not available: {str(e)}")
+            continue
 
 if not ACTIVE_MODEL:
-    raise RuntimeError("No supported models available. Check Groq's documentation for current models.")
+    print("Warning: No supported models available. AI features will be disabled.")
+    ACTIVE_MODEL = "llama3-8b-8192"  # Default fallback
 
 print(f"Using model: {ACTIVE_MODEL}")
 
 # Helper functions
 def generate_response(prompt, max_tokens=1024):
+    if not client:
+        return "Sorry, AI service is currently unavailable. Please check your API key configuration."
+    
     try:
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
