@@ -2,6 +2,15 @@
 
 A comprehensive AI-powered API server built with Flask, featuring multiple AI capabilities including chat, math solving, PDF summarization, flashcards, task management, and more.
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/gauravmalhotra04/raiden-ai)
+[![Python](https://img.shields.io/badge/Python-3.8+-green?style=for-the-badge&logo=python)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-red?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com)
+
+## 🌐 Live Demo
+
+- **GitHub Repository**: [https://github.com/gauravmalhotra04/raiden-ai](https://github.com/gauravmalhotra04/raiden-ai)
+- **Deployment Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions
+
 ## Features
 
 - 🤖 **AI Chat**: Powered by Groq's LLM models
