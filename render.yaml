@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: raiden-ai
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT server:app
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production 
